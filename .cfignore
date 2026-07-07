@@ -1,0 +1,28 @@
+# Ignore dev dependencies and tests
+node_modules/**/test
+node_modules/**/docs
+node_modules/**/examples
+
+# Ignore local config and logs
+*.log
+*.md
+.env
+.idea/
+.vscode/
+
+# Ignore build artifacts
+dist/
+tmp/
+gen/
+target/
+_out/
+
+# CAP-specific generated files
+mta_archives/
+*_mta_build_tmp
+*.mtar
+@cds-models
+db/.env
+
+# OS junk
+.DS_Store

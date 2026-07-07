@@ -1,0 +1,21 @@
+# Ignore non-deployment files
+*.md
+*.log
+test/
+docs/
+local/
+
+# IDE/editor configs
+.idea/
+.vscode/
+
+# OS junk
+.DS_Store
+
+# Build artifacts
+gen/
+target/
+_out/
+
+# CAP-specific generated files
+@cds-models

@@ -1,0 +1,11 @@
+{
+  "name": "db",
+  "version": "1.0.0",
+  "description": "Deployment configuration for SAP HANA HDI container",
+  "scripts": {
+    "start": "node node_modules/@sap/hdi-deploy/deploy.js --exit"
+  },
+  "dependencies": {
+    "@sap/hdi-deploy": "^4.9.5"
+  }
+}
