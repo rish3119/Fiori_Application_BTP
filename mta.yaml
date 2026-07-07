@@ -1,7 +1,99 @@
 _schema-version: 3.3.0
 ID: LearningPurpose
+description: A simple CAP project.
 version: 1.0.0
-description: "A simple CAP project."
+modules:
+  - name: LearningPurpose-srv
+    type: nodejs
+    path: gen/srv
+    requires:
+      - name: LearningPurpose-db
+      - name: uaa_LearningPurpose
+    provides:
+      - name: srv-api
+        properties:
+          srv-url: ${default-url}
+    parameters:
+      buildpack: nodejs_buildpack
+      disk-quota: 512M
+      instances: 1
+      memory: 256M
+    build-parameters:
+      builder: npm-ci
+  - name: LearningPurpose-db-deployer
+    type: hdb
+    path: db
+    requires:
+      - name: LearningPurpose-db
+    parameters:
+      buildpack: nodejs_buildpack
+      disk-quota: 256M
+      memory: 128M
+  - name: LearningPurpose-destination-content
+    type: com.sap.application.content
+    requires:
+      - name: LearningPurpose-destination-service
+        parameters:
+          content-target: true
+      - name: LearningPurpose_html_repo_host
+        parameters:
+          service-key:
+            name: LearningPurpose_html_repo_host-key
+      - name: uaa_LearningPurpose
+        parameters:
+          service-key:
+            name: uaa_LearningPurpose-key
+    parameters:
+      content:
+        instance:
+          destinations:
+            - Name: ApplicationRouter_LearningPurpose_html_repo_host
+              ServiceInstanceName: LearningPurpose-html5-app-host-service
+              ServiceKeyName: LearningPurpose_html_repo_host-key
+              sap.cloud.service: ApplicationRouter
+            - Authentication: OAuth2UserTokenExchange
+              Name: ApplicationRouter_uaa_LearningPurpose
+              ServiceInstanceName: LearningPurpose-xsuaa-service
+              ServiceKeyName: uaa_LearningPurpose-key
+              sap.cloud.service: ApplicationRouter
+          existing_destinations_policy: ignore
+    build-parameters:
+      no-source: true
+resources:
+  - name: LearningPurpose-db
+    type: com.sap.xs.hdi-container
+    parameters:
+      service: hana
+      service-plan: hdi-shared
+  - name: LearningPurpose-destination-service
+    type: org.cloudfoundry.managed-service
+    parameters:
+      config:
+        HTML5Runtime_enabled: true
+        version: 1.0.0
+      service: destination
+      service-name: LearningPurpose-destination-service
+      service-plan: lite
+  - name: LearningPurpose_html_repo_host
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: html5-apps-repo
+      service-name: LearningPurpose-html5-app-host-service
+      service-plan: app-host
+  - name: uaa_LearningPurpose
+    type: org.cloudfoundry.managed-service
+    parameters:
+      path: ./xs-security.json
+      service: xsuaa
+      service-name: LearningPurpose-xsuaa-service
+      service-plan: application
+      config:
+        xsappname: LearningPurpose-${org}-${space}
+        tenant-mode: dedicated
+        oauth2-configuration:
+          credential-types:
+            - "binding-secret"
+            - "x509"
 parameters:
   enable-parallel-deployments: true
 build-parameters:
@@ -10,37 +102,3 @@ build-parameters:
       commands:
         - npm ci
         - npx cds build --production
-modules:
-  - name: LearningPurpose-srv
-    type: nodejs
-    path: gen/srv
-    parameters:
-      instances: 1
-      buildpack: nodejs_buildpack
-      memory: 256M
-      disk-quota: 512M  
-    build-parameters:
-      builder: npm-ci
-    provides:
-      - name: srv-api # required by consumers of CAP services (e.g. approuter)
-        properties:
-          srv-url: ${default-url}
-    requires:
-      - name: LearningPurpose-db
-
-  - name: LearningPurpose-db-deployer
-    type: hdb
-    path: db
-    parameters:
-      buildpack: nodejs_buildpack
-      memory: 128M
-      disk-quota: 256M
-    requires:
-      - name: LearningPurpose-db
-
-resources:
-  - name: LearningPurpose-db
-    type: com.sap.xs.hdi-container
-    parameters:
-      service: hana
-      service-plan: hdi-shared
