@@ -6,7 +6,11 @@
   "license": "UNLICENSED",
   "private": true,
   "scripts": {
-    "start": "cds-serve"
+    "start": "cds-serve",
+    "watch-learninhg_purpose_app": "cds watch --open learningpurposefioriapp.learninhgpurposeapp/index.html?sap-ui-xx-viewCache=false --livereload false",
+    "undeploy": "cf undeploy LearningPurpose --delete-services --delete-service-keys --delete-service-brokers",
+    "build": "rimraf resources mta_archives && mbt build --mtar archive",
+    "deploy": "cf deploy mta_archives/archive.mtar --retries 1"
   },
   "dependencies": {
     "@cap-js/hana": "^2",
@@ -37,10 +41,19 @@
     }
   },
   "devDependencies": {
-    "@sap/cds-dk": "^10.0.3"
+    "@sap/cds-dk": "^10.0.3",
+    "cds-plugin-ui5": "^0.17.0",
+    "rimraf": "^5.0.5",
+    "mbt": "^1.2.49"
   },
   "engines": {
     "node": "20.x",
     "npm": "10.x"
-  }
+  },
+  "workspaces": [
+    "app/*"
+  ],
+  "sapux": [
+    "app/learninhg_purpose_app"
+  ]
 }
