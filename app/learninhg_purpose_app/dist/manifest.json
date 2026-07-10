@@ -178,6 +178,11 @@
 	"sap.fe": {
 		"app": {
 			"enableLazyLoading": true
+		},
+		"macros": {
+			"table": {
+				"defaultCreationMode": "InlineCreationRows"
+			}
 		}
 	},
 	"sap.cloud": {

@@ -1,21 +1,31 @@
 {
-  "xsappname": "learningpurpose",
-  "tenant-mode": "dedicated",
-  "description": "Security profile of called application",
   "scopes": [
     {
-      "name": "uaa.user",
-      "description": "UAA"
+      "name": "$XSAPPNAME.LearningPurposeAdmin",
+      "description": "LearningPurposeAdmin"
+    },
+    {
+      "name": "$XSAPPNAME.LearningPurposeRead",
+      "description": "LearningPurposeRead"
     }
   ],
+  "attributes": [],
   "role-templates": [
     {
-      "name": "Token_Exchange",
-      "description": "UAA",
+      "name": "LearningPurposeAdmin",
+      "description": "generated",
       "scope-references": [
-        "uaa.user"
-      ]
+        "$XSAPPNAME.LearningPurposeAdmin"
+      ],
+      "attribute-references": []
+    },
+    {
+      "name": "LearningPurposeRead",
+      "description": "generated",
+      "scope-references": [
+        "$XSAPPNAME.LearningPurposeRead"
+      ],
+      "attribute-references": []
     }
-  ],
-  "attributes": []
+  ]
 }
